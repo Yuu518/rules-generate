@@ -1,8 +1,6 @@
 module github.com/Yuu518/rules-generate
 
-go 1.26
-
-toolchain go1.26.0
+go 1.25.8
 
 require (
 	github.com/metacubex/mihomo v1.19.20

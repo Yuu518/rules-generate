@@ -323,3 +323,80 @@ func ParseExcludeAttrs(excludeAttrsStr string) map[model.FileName]map[model.Attr
 	}
 	return result
 }
+
+func SplitRuleMapByAttrs(data model.RuleMap, attrs []string) {
+	if len(attrs) == 0 {
+		return
+	}
+
+	attrSet := make(map[string]bool, len(attrs))
+	splitAll := false
+	for _, attr := range attrs {
+		attr = strings.ToLower(strings.TrimSpace(attr))
+		if attr == "" {
+			continue
+		}
+		if attr == "all" {
+			splitAll = true
+			continue
+		}
+		attrSet[attr] = true
+	}
+	if len(attrSet) == 0 && !splitAll {
+		return
+	}
+
+	var codeList []string
+	for code := range data {
+		codeList = append(codeList, code)
+	}
+
+	type ruleKey struct {
+		Type  model.DomainType
+		Value string
+	}
+
+	for _, code := range codeList {
+		if strings.Contains(code, "@") {
+			continue
+		}
+
+		baseRules := data[code]
+		if len(baseRules) == 0 {
+			continue
+		}
+
+		splitMap := make(map[string][]model.DomainRule)
+		for _, rule := range baseRules {
+			if len(rule.Attributes) == 0 {
+				continue
+			}
+			for _, attr := range rule.Attributes {
+				attr = strings.ToLower(strings.TrimSpace(attr))
+				if attr == "" {
+					continue
+				}
+				if !splitAll && !attrSet[attr] {
+					continue
+				}
+				targetCode := code + "@" + attr
+				splitMap[targetCode] = append(splitMap[targetCode], rule)
+			}
+		}
+
+		for targetCode, rules := range splitMap {
+			merged := append(data[targetCode], rules...)
+			seen := make(map[ruleKey]bool, len(merged))
+			unique := make([]model.DomainRule, 0, len(merged))
+			for _, rule := range merged {
+				key := ruleKey{Type: rule.Type, Value: rule.Value}
+				if seen[key] {
+					continue
+				}
+				seen[key] = true
+				unique = append(unique, rule)
+			}
+			data[targetCode] = unique
+		}
+	}
+}

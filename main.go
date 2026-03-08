@@ -18,6 +18,7 @@ var (
 	formatStr    string
 	listsStr     string
 	excludeAttrs string
+	splitAttrs   string
 	concurrency  int
 )
 
@@ -62,6 +63,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&formatStr, "format", "f", "all", "Output formats: singbox,surge,loon,all")
 	rootCmd.PersistentFlags().StringVarP(&listsStr, "lists", "l", "", "Lists to export (comma-separated, default: all)")
 	rootCmd.PersistentFlags().StringVar(&excludeAttrs, "exclude-attrs", "cn@!cn@ads,geolocation-cn@!cn@ads,geolocation-!cn@cn@ads", "Exclude rules with attributes, e.g. cn@!cn@ads,geolocation-cn@!cn")
+	rootCmd.PersistentFlags().StringVar(&splitAttrs, "split-attrs", "all", "Generate extra list@attr rule sets from attribute-tagged rules (default: all); e.g. all or cn,ads")
 	rootCmd.PersistentFlags().IntVarP(&concurrency, "concurrency", "j", runtime.NumCPU(), "Concurrency level")
 
 	domaindirCmd.Flags().StringVarP(&domainDirPath, "datapath", "d", "", "Path to domain data directory (required)")
@@ -148,6 +150,11 @@ func runIPDir(cmd *cobra.Command, args []string) error {
 }
 
 func exportDomain(ruleMap model.RuleMap) error {
+	splitAttrList := parseAttrs(splitAttrs)
+	if len(splitAttrList) > 0 {
+		resolver.SplitRuleMapByAttrs(ruleMap, splitAttrList)
+	}
+
 	lists := parseLists(listsStr)
 	formats := parseFormats(formatStr)
 	splitByFormat := len(formats) > 1
@@ -232,4 +239,27 @@ func parseFormats(s string) []string {
 		}
 	}
 	return formats
+}
+
+func parseAttrs(s string) []string {
+	if s == "" {
+		return nil
+	}
+
+	parts := strings.Split(s, ",")
+	attrSet := make(map[string]bool, len(parts))
+	attrs := make([]string, 0, len(parts))
+	for _, part := range parts {
+		part = strings.ToLower(strings.TrimSpace(part))
+		part = strings.TrimPrefix(part, "@")
+		if part == "*" {
+			part = "all"
+		}
+		if part == "" || attrSet[part] {
+			continue
+		}
+		attrSet[part] = true
+		attrs = append(attrs, part)
+	}
+	return attrs
 }
