@@ -60,7 +60,7 @@ var (
 
 func init() {
 	rootCmd.PersistentFlags().StringVarP(&outputDir, "output", "o", "./output", "Output directory")
-	rootCmd.PersistentFlags().StringVarP(&formatStr, "format", "f", "all", "Output formats: singbox,surge,loon,all")
+	rootCmd.PersistentFlags().StringVarP(&formatStr, "format", "f", "all", "Output formats: singbox,surge,loon,mihomo,all")
 	rootCmd.PersistentFlags().StringVarP(&listsStr, "lists", "l", "", "Lists to export (comma-separated, default: all)")
 	rootCmd.PersistentFlags().StringVar(&excludeAttrs, "exclude-attrs", "cn@!cn@ads,geolocation-cn@!cn@ads,geolocation-!cn@cn@ads", "Exclude rules with attributes, e.g. cn@!cn@ads,geolocation-cn@!cn")
 	rootCmd.PersistentFlags().StringVar(&splitAttrs, "split-attrs", "all", "Generate extra list@attr rule sets from attribute-tagged rules (default: all); e.g. all or cn,ads")
@@ -173,6 +173,9 @@ func exportDomain(ruleMap model.RuleMap) error {
 		case "loon":
 			fmt.Println("Exporting Loon rules...")
 			err = output.ExportLoon(ruleMap, outputDir, lists, concurrency, splitByFormat)
+		case "mihomo":
+			fmt.Println("Exporting mihomo rules...")
+			err = output.ExportMihomo(ruleMap, outputDir, lists, concurrency, splitByFormat)
 		}
 		if err != nil {
 			return err
@@ -202,6 +205,9 @@ func exportIP(ipRuleMap model.IPRuleMap) error {
 		case "loon":
 			fmt.Println("Exporting Loon IP rules...")
 			err = output.ExportLoonIP(ipRuleMap, outputDir, lists, concurrency, splitByFormat)
+		case "mihomo":
+			fmt.Println("Exporting mihomo IP rules...")
+			err = output.ExportMihomoIP(ipRuleMap, outputDir, lists, concurrency, splitByFormat)
 		}
 		if err != nil {
 			return err
@@ -229,7 +235,7 @@ func parseLists(s string) []string {
 func parseFormats(s string) []string {
 	s = strings.ToLower(strings.TrimSpace(s))
 	if s == "" || s == "all" {
-		return []string{"singbox", "surge", "loon"}
+		return []string{"singbox", "surge", "loon", "mihomo"}
 	}
 	var formats []string
 	for _, f := range strings.Split(s, ",") {

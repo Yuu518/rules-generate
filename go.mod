@@ -8,20 +8,38 @@ require (
 	github.com/sagernet/sing-box v1.13.2
 	github.com/spf13/cobra v1.10.2
 	google.golang.org/protobuf v1.36.11
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
+	github.com/dlclark/regexp2 v1.11.5 // indirect
+	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/gofrs/uuid/v5 v5.4.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
+	github.com/klauspost/compress v1.18.0 // indirect
+	github.com/metacubex/bart v0.26.0 // indirect
+	github.com/metacubex/bbolt v0.0.0-20250725135710-010dbbbb7a5b // indirect
+	github.com/metacubex/cpu v0.1.0 // indirect
+	github.com/metacubex/fswatch v0.1.1 // indirect
+	github.com/metacubex/hkdf v0.1.0 // indirect
+	github.com/metacubex/hpke v0.1.0 // indirect
+	github.com/metacubex/http v0.1.0 // indirect
+	github.com/metacubex/mlkem v0.1.0 // indirect
 	github.com/metacubex/randv2 v0.2.0 // indirect
 	github.com/metacubex/sing v0.5.7 // indirect
+	github.com/metacubex/tfo-go v0.0.0-20251130171125-413e892ac443 // indirect
+	github.com/metacubex/tls v0.1.4 // indirect
 	github.com/miekg/dns v1.1.72 // indirect
 	github.com/openacid/low v0.1.21 // indirect
+	github.com/oschwald/maxminddb-golang v1.13.1 // indirect
 	github.com/samber/lo v1.53.0 // indirect
 	github.com/sirupsen/logrus v1.9.4 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
+	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
+	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	go4.org/netipx v0.0.0-20231129151722-fdeea329fbba // indirect
+	golang.org/x/crypto v0.48.0 // indirect
 	golang.org/x/exp v0.0.0-20260218203240-3dfff04db8fa // indirect
 	golang.org/x/mod v0.33.0 // indirect
 	golang.org/x/net v0.51.0 // indirect
